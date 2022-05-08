@@ -1,0 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Fredoka:wght@300&family=Mada&display=swap');
+
+.gradient-scroll-bg {
+    background: linear-gradient(245deg, #c92a2a, #862e9c, #339af0, #fd7e14, #40c057);
+    background-size: 1000% 1000%;
+
+    -webkit-animation: gradientScroll 12s ease infinite;
+    -moz-animation: gradientScroll 12s ease infinite;
+    animation: gradientScroll 12s ease infinite;
+}
+
+@-webkit-keyframes gradientScroll {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 51%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+@-moz-keyframes gradientScroll {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 51%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+@keyframes gradientScroll {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 51%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+h1, h2 {
+    font-family: 'Fredoka One', cursive;
+}
+
+html {
+    font-family: 'Mada', sans-serif;
+}
