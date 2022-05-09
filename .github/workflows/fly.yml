@@ -8,6 +8,8 @@ env:
   FLY_ACCESS_TOKEN: ${{ secrets.FLY_ACCESS_TOKEN }}
   SHYNET_PIXEL_SRC: ${{ secrets.SHYNET_PIXEL_SRC }}
   SHYNET_SCRIPT_SRC: ${{ secrets.SHYNET_SCRIPT_SRC }}
+  GADS_CLIENT: ${{ secrets.GADS_CLIENT }}
+  GADS_SLOT: ${{ secrets.GADS_SLOT }}
 jobs:
   deploy:
       name: Deploy app
