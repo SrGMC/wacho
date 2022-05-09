@@ -1,10 +1,8 @@
 const { Sequelize, Model, DataTypes, Op } = require("sequelize");
-const emojify = require("./utils/emojify.js");
+const emojify = require("./libs/emojify.js");
+const tmdb = require("./libs/tmdb.js");
 const fastify = require("fastify")({ logger: true });
 const path = require("path");
-const { MovieDb } = require("moviedb-promise");
-
-const tmdb = new MovieDb(process.env.TMDB_API_KEY);
 
 /*
     Utils
@@ -57,12 +55,12 @@ Party.hasMany(Item, { foreignKey: { name: "partyId", allowNull: false } });
 
 fastify.register(require("@fastify/static"), {
     root: path.join(__dirname, "dist"),
-    prefixAvoidTrailingSlash: true
+    prefixAvoidTrailingSlash: true,
 });
 
 fastify.register(require("fastify-language-parser"), {
     supportedLngs: ["en"],
-    order: ['header']
+    order: ["header"],
 });
 
 async function sync() {
@@ -146,7 +144,7 @@ fastify.get("/api/v1/item/search", async (request, reply) => {
                 tmdbId: item.id,
                 title: item.title,
                 overview: item.overview,
-                poster: "https://image.tmdb.org/t/p/w500/" + item.poster_path,
+                poster: item.poster_path ? "https://image.tmdb.org/t/p/w500/" + item.poster_path : "/assets/unknown.png",
                 runtime: item.runtime,
                 url: item.homepage,
             };
@@ -321,9 +319,7 @@ fastify.get("/api/v1/item/list", async (request, reply) => {
         where: {
             partyId: request.query.partyId,
         },
-        order: [
-            ['tmdbId', 'DESC'],
-        ]
+        order: [["tmdbId", "DESC"]],
     });
 
     if (!items) {
@@ -345,7 +341,11 @@ fastify.get("/api/v1/item/list", async (request, reply) => {
         let movie = await tmdb.movieInfo({ id: items[i].tmdbId, language: request.detectedLng });
         items[i]["title"] = movie.title;
         items[i]["overview"] = movie.overview;
-        items[i]["poster"] = "https://image.tmdb.org/t/p/w500/" + movie.poster_path;
+        if (movie.poster_path) {
+            items[i]["poster"] = "https://image.tmdb.org/t/p/w500/" + movie.poster_path;
+        } else {
+            items[i]['poster'] = "/assets/unknown.png";
+        }
         items[i]["runtime"] = movie.runtime;
         items[i]["url"] = movie.homepage;
     }
@@ -365,9 +365,7 @@ fastify.get("/api/v1/item/random", async (request, reply) => {
             viewed: false,
             skipped: false,
         },
-        order: [
-            ['tmdbId', 'DESC'],
-        ]
+        order: [["tmdbId", "DESC"]],
     });
 
     if (!items) {
@@ -392,7 +390,7 @@ fastify.get("/api/v1/item/random", async (request, reply) => {
         addedBy: item.addedBy,
         title: movie.title,
         overview: movie.overview,
-        poster: "https://image.tmdb.org/t/p/original/" + movie.poster_path,
+        poster: movie.poster_path ? "https://image.tmdb.org/t/p/original/" + movie.poster_path : "/assets/unknown.png",
         runtime: movie.runtime,
         url: movie.homepage,
         providers: countryProviders.link,
