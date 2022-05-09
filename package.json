@@ -1,12 +1,13 @@
 {
-  "name": "film-shuffle",
+  "name": "wacho",
   "version": "1.0.0",
-  "description": "",
+  "description": "Create lists with your friends and add movies you want to watch. Then, when you get together, let us choose what to watch.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js",
+    "build": "node build.js"
   },
-  "author": "",
+  "author": "Álvaro Galisteo (SrGMC)",
   "license": "GPL-3.0",
   "dependencies": {
     "@fastify/static": "^5.0.2",
@@ -21,5 +22,9 @@
     "sequelize": "^6.19.0",
     "sqlite3": "^5.0.8",
     "tmdb": "^2.6.0"
+  },
+  "devDependencies": {
+    "glob": "^8.0.1",
+    "node-html-parser": "^5.3.3"
   }
 }
