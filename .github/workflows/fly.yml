@@ -17,7 +17,7 @@ jobs:
           uses: actions/checkout@v2
           
         - name: Setup fly.io CLI
-          run: curl -L https://fly.io/install.sh | sh ; /home/runner/.fly/bin/flyctl auth login
+          run: curl -L https://fly.io/install.sh | sh
           
         - name: Setup Node.js environment
           uses: actions/setup-node@v3.1.1        
