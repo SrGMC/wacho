@@ -1,0 +1,31 @@
+name: Deploy to fly.io
+
+on:
+  push:
+    branches: [ main ]
+    
+env:
+  FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+  SHYNET_PIXEL_SRC: ${{ secrets.SHYNET_PIXEL_SRC }}
+  SHYNET_SCRIPT_SRC: ${{ secrets.SHYNET_SCRIPT_SRC }}
+jobs:
+  deploy:
+      name: Deploy app
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout repo
+          uses: actions/checkout@v2
+          
+        - name: Setup fly.io CLI
+          uses: superfly/flyctl-actions/setup-flyctl@master
+          
+        - name: Setup Node.js environment
+          uses: actions/setup-node@v3.1.1        
+          with:
+            node-version: 16.x
+
+        - name: Build webapp
+          run: node
+          
+        - name: Deploy to fly.io
+          run: flyctl deploy --remote-only
