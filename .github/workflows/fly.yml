@@ -28,4 +28,4 @@ jobs:
           run: node
           
         - name: Deploy to fly.io
-          run: /home/runner/.fly/flyctl deploy
+          run: /home/runner/.fly/bin/flyctl deploy
