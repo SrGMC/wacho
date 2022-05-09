@@ -50,3 +50,8 @@ h1, h2 {
 html {
     font-family: 'Mada', sans-serif;
 }
+
+.ad {
+    max-height: 90px !important;
+    height: 90px !important;
+}

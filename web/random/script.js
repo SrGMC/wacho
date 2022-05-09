@@ -53,6 +53,7 @@ async function init() {
             emojiId: party.emojiId,
             partyId: party.partyId,
             item: item,
+            loading: false
         })
     );
     Lucia.init();

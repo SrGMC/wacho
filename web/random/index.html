@@ -85,7 +85,7 @@
         <div class="col-lg-8 mx-auto p-3 py-md-5">
             <header class="d-flex align-items-center pb-3 mb-3 border-bottom border-dark">
                 <a href="/" class="d-flex align-items-center text-dark text-decoration-none">
-                    <h1 class="fs-1">🎉 Wacho</h1>
+                    <h1 class="fs-1">🎉 WACHO</h1>
                 </a>
             </header>
 
@@ -95,16 +95,29 @@
                 </div>
                 <h1 l-text="emojiId" class="mb-3"></h1>
 
+                <div class="ad mt-2">
+                    <ins
+                        class="adsbygoogle"
+                        style="display: block; width: 100%; height: 90px"
+                        data-ad-client="ca-pub-4355128340254185"
+                        data-ad-slot="7540706766"
+                        data-ad-format="auto"
+                        data-full-width-responsive="true"
+                    ></ins>
+                </div>
+
                 <hr class="col-3 col-md-2 mb-3" />
 
                 <a href="/random" class="btn gradient-scroll-bg btn-lg w-100 my-2 text-white fs-3"><i class="bi bi-shuffle me-2"></i> Randomize!</a><br />
 
+                <div class="text-center my-3" l-show="loading">
+                    <div class="spinner-grow spinner-grow-sm" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
                 <div class="d-flex justify-content-center">
-                    <div class="card mb-3" style="max-width: 780px">
+                    <div class="card mb-3" style="max-width: 780px; display: none" l-show="!loading">
                         <div class="row g-0">
-                            <div class="col-md-5">
-                                <img l-bind:src="item.poster" class="img-fluid rounded-start" l-bind:alt="item.title + ' poster'" />
-                            </div>
                             <div class="col-md-7">
                                 <div class="card-body">
                                     <b class="fs-1 card-title me-3" l-text="item.title"></b>
@@ -137,11 +150,16 @@
                                     </button>
                                 </div>
                             </div>
+                            <div class="col-md-5">
+                                <img l-bind:src="item.poster" class="img-fluid rounded-end" l-bind:alt="item.title + ' poster'" />
+                            </div>
                         </div>
                     </div>
                 </div>
+
+                <div class="ad mt-2"></div>
             </main>
-            <footer class="pt-5 my-5 text-muted border-top border-dark">
+            <footer class="pt-5 mt-2 mb-5 text-muted border-top border-dark">
                 Created by <a href="https://alvaro.galisteo.me">Álvaro Galisteo</a> &middot; &copy; 2022 <br />
                 Data provided by <a href="https://themoviedb.org">The Movie Database</a> and <a href="https://justwatch.com">JustWatch</a>
             </footer>

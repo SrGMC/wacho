@@ -86,7 +86,7 @@
         <div class="col-lg-8 mx-auto p-3 py-md-5">
             <header class="d-flex align-items-center pb-3 mb-3 border-bottom border-dark">
                 <a href="/" class="d-flex align-items-center text-dark text-decoration-none">
-                    <h1 class="fs-1">🎉 Wacho</h1>
+                    <h1 class="fs-1">🎉 WACHO</h1>
                 </a>
             </header>
 
@@ -100,16 +100,30 @@
 
                 <hr class="col-3 col-md-2 mb-5" />
 
-                <div id="partyForm">
+                <div id="partyForm" l-state="{ emojiId: '' }">
                     <div class="mb-3">
                         <label for="partyId" class="form-label">Watch Party ID</label>
                         <input type="text" class="form-control" id="partyId" aria-describedby="partyIdHelp" l-model="emojiId" />
                         <div id="partyIdHelp" class="form-text">The ID of a Watch Party is composed by 5 emojis.</div>
                     </div>
-                    <button class="btn btn-success" @click="window.location = window.location.origin + '/list?id=' + emojiId">Access the Watch Party</button>
+                    <button class="btn btn-success" disabled l-show="emojiId.length == 0">Access the Watch Party</button>
+                    <a class="btn btn-success" l-show="emojiId.length > 0" l-bind:href="window.location.origin + '/list?id=' + emojiId" style="display: none">
+                        Access the Watch Party
+                    </a>
+                </div>
+
+                <div class="ad mt-2">
+                    <ins
+                        class="adsbygoogle"
+                        style="display: block; width: 100%; height: 90px"
+                        data-ad-client="ca-pub-4355128340254185"
+                        data-ad-slot="7540706766"
+                        data-ad-format="auto"
+                        data-full-width-responsive="true"
+                    ></ins>
                 </div>
             </main>
-            <footer class="pt-5 my-5 text-muted border-top border-dark">
+            <footer class="pt-5 mt-2 mb-5 text-muted border-top border-dark">
                 Created by <a href="https://alvaro.galisteo.me">Álvaro Galisteo</a> &middot; &copy; 2022 <br />
                 Data provided by <a href="https://themoviedb.org">The Movie Database</a> and <a href="https://justwatch.com">JustWatch</a>
             </footer>

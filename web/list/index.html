@@ -85,7 +85,7 @@
         <div class="col-lg-8 mx-auto p-3 py-md-5">
             <header class="d-flex align-items-center pb-3 mb-3 border-bottom border-dark">
                 <a href="/" class="d-flex align-items-center text-dark text-decoration-none">
-                    <h1 class="fs-1">🎉 Wacho</h1>
+                    <h1 class="fs-1">🎉 WACHO</h1>
                 </a>
             </header>
 
@@ -94,6 +94,17 @@
 
                 <label for="shareInput" class="form-label">Share this list</label>
                 <input type="text" class="form-control" l-bind:value="partyUrl" />
+
+                <div class="ad mt-2">
+                    <ins
+                        class="adsbygoogle"
+                        style="display: block; width: 100%; height: 90px"
+                        data-ad-client="ca-pub-4355128340254185"
+                        data-ad-slot="7540706766"
+                        data-ad-format="auto"
+                        data-full-width-responsive="true"
+                    ></ins>
+                </div>
 
                 <hr class="col-3 col-md-2" />
 
@@ -110,13 +121,13 @@
                 <div l-for="(item, index) in items.list" l-show="items.length > 0" style="display: none">
                     <div class="card mb-2 mt-2">
                         <div class="row g-0">
-                            <div class="col-md-2">
+                            <div class="col-2">
                                 <img l-bind:src="this.item.poster" class="img-fluid rounded-start" l-bind:alt="this.item.title + ' poster'" />
                             </div>
-                            <div class="col-md-10">
+                            <div class="col-10">
                                 <div class="card-body">
                                     <div class="align-middle">
-                                        <b class="fs-2 card-title" l-text="this.item.title"></b><br>
+                                        <b class="fs-2 card-title" l-text="this.item.title"></b><br />
                                         <button
                                             class="mb-2 btn btn-outline-success"
                                             l-show="!this.item.viewed"
@@ -125,11 +136,7 @@
                                         >
                                             <i class="bi bi-eye"></i>
                                         </button>
-                                        <button
-                                            class="mb-2 btn btn-success"
-                                            l-show="this.item.viewed"
-                                            @click="unsetItemAsViewed(this.item.tmdbId, items, $el);"
-                                        >
+                                        <button class="mb-2 btn btn-success" l-show="this.item.viewed" @click="unsetItemAsViewed(this.item.tmdbId, items, $el);">
                                             <i class="bi bi-eye"></i>
                                         </button>
                                         <button
@@ -140,11 +147,7 @@
                                         >
                                             <i class="bi bi-skip-forward"></i>
                                         </button>
-                                        <button
-                                            class="mb-2 btn btn-secondary"
-                                            l-show="this.item.skipped"
-                                            @click="unsetItemAsSkipped(this.item.tmdbId, items, $el)"
-                                        >
+                                        <button class="mb-2 btn btn-secondary" l-show="this.item.skipped" @click="unsetItemAsSkipped(this.item.tmdbId, items, $el)">
                                             <i class="bi bi-skip-forward"></i>
                                         </button>
                                     </div>
@@ -158,8 +161,18 @@
                         </div>
                     </div>
                 </div>
+                <div class="ad mt-2">
+                    <ins
+                        class="adsbygoogle"
+                        style="display: block; width: 100%; height: 90px"
+                        data-ad-client="ca-pub-4355128340254185"
+                        data-ad-slot="7540706766"
+                        data-ad-format="auto"
+                        data-full-width-responsive="true"
+                    ></ins>
+                </div>
             </main>
-            <footer class="pt-5 my-5 text-muted border-top border-dark">
+            <footer class="pt-5 mt-2 mb-5 text-muted border-top border-dark">
                 Created by <a href="https://alvaro.galisteo.me">Álvaro Galisteo</a> &middot; &copy; 2022 <br />
                 Data provided by <a href="https://themoviedb.org">The Movie Database</a> and <a href="https://justwatch.com">JustWatch</a>
             </footer>
