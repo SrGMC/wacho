@@ -321,6 +321,9 @@ fastify.get("/api/v1/item/list", async (request, reply) => {
         where: {
             partyId: request.query.partyId,
         },
+        order: [
+            ['tmdbId', 'DESC'],
+        ]
     });
 
     if (!items) {
@@ -362,6 +365,9 @@ fastify.get("/api/v1/item/random", async (request, reply) => {
             viewed: false,
             skipped: false,
         },
+        order: [
+            ['tmdbId', 'DESC'],
+        ]
     });
 
     if (!items) {
