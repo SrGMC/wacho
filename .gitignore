@@ -107,3 +107,6 @@ dist/
 
 # Database
 db.sqlite
+
+# Misc
+.env
