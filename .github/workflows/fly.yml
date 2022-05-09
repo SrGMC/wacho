@@ -17,7 +17,7 @@ jobs:
           uses: actions/checkout@v2
           
         - name: Setup fly.io CLI
-          uses: superfly/flyctl-actions/setup-flyctl@master
+          run: curl -L https://fly.io/install.sh | sh
           
         - name: Setup Node.js environment
           uses: actions/setup-node@v3.1.1        
@@ -28,4 +28,4 @@ jobs:
           run: node
           
         - name: Deploy to fly.io
-          run: flyctl deploy --remote-only
+          run: flyctl deploy
