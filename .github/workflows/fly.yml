@@ -25,7 +25,7 @@ jobs:
             node-version: 16.x
 
         - name: Build webapp
-          run: npm i && node build.js
+          run: ls && npm i && node build.js
           
         - name: Deploy to fly.io
           run: /home/runner/.fly/bin/flyctl deploy
