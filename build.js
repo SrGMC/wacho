@@ -22,7 +22,11 @@ function copyRecursiveSync(src, dest) {
     }
 }
 
-fs.rmdirSync(__dirname + "/dist", { recursive: true });
+try {
+    fs.rmdirSync(__dirname + "/dist", { recursive: true });
+} catch (err) {
+    console.warn(__dirname + "/dist not found. Skipping deletion...");
+}
 copyRecursiveSync(__dirname + "/web", __dirname + "/dist");
 
 glob(__dirname + "/dist/**/*.html", {}, (err, files) => {
