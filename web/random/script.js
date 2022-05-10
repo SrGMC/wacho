@@ -1,7 +1,7 @@
 const partyId = localStorage.getItem("emojiId");
 
-const http = new HTTP();
-const api = new API(http);
+const http = new HTTPClass();
+const api = new APIClass(http);
 
 function setItemAsViewed(tmdbId, item, element) {
     setLoadButton(element);

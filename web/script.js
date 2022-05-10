@@ -1,5 +1,5 @@
-const http = new HTTP();
-const api = new API(http);
+const http = new HTTPClass();
+const api = new APIClass(http);
 
 function createParty(button) {
     setLoadButton(button);

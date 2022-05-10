@@ -1,8 +1,8 @@
 const urlParams = new URLSearchParams(window.location.search);
 const partyId = urlParams.get("id");
 
-const http = new HTTP();
-const api = new API(http);
+const http = new HTTPClass();
+const api = new APIClass(http);
 
 function setItemAsViewed(tmdbId, items, element) {
     setLoadButton(element);

@@ -1,4 +1,4 @@
-class HTTP {
+class HTTPClass {
     constructor() {}
     /**
      * Make a HTTP request
@@ -87,7 +87,7 @@ class HTTP {
     }
 }
 
-class API {
+class APIClass {
     constructor(http) {
         this.http = http;
     }
