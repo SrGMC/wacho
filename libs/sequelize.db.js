@@ -1,10 +1,10 @@
-const { Sequelize, DataTypes } = require("sequelize");
+const { Sequelize, DataTypes } = require('sequelize');
 
 const sequelize = new Sequelize(process.env.DATABASE_URL, {
-    storage: "db.sqlite",
+    storage: 'db.sqlite',
 });
 
-const Party = sequelize.define("Party", {
+const Party = sequelize.define('Party', {
     id: {
         type: DataTypes.STRING,
         unique: true,
@@ -13,7 +13,7 @@ const Party = sequelize.define("Party", {
     },
 });
 
-const Item = sequelize.define("Item", {
+const Item = sequelize.define('Item', {
     tmdbId: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -34,7 +34,40 @@ const Item = sequelize.define("Item", {
     },
 });
 
-Party.hasMany(Item, { foreignKey: { name: "partyId", allowNull: false } });
+Party.hasMany(Item, { foreignKey: { name: 'partyId', allowNull: false } });
+
+const RateLimits = sequelize.define(
+    'RateLimits',
+    {
+        Route: {
+            type: Sequelize.TEXT,
+            allowNull: false,
+        },
+        Source: {
+            type: Sequelize.TEXT,
+            allowNull: false,
+            primaryKey: true,
+        },
+        Count: {
+            type: Sequelize.INTEGER,
+            allowNull: false,
+        },
+        TTL: {
+            type: Sequelize.BIGINT,
+            allowNull: false,
+        },
+    },
+    {
+        freezeTableName: true,
+        timestamps: false,
+        indexes: [
+            {
+                unique: true,
+                fields: ['Route', 'Source'],
+            },
+        ],
+    }
+);
 
 async function sync() {
     await sequelize.sync();
@@ -42,5 +75,6 @@ async function sync() {
 
 exports.Party = Party;
 exports.Item = Item;
+exports.RateLimits = RateLimits;
 exports.sequelize = sequelize;
 exports.sync = sync;
