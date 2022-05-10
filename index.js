@@ -1,9 +1,10 @@
-const sequelize = require('./libs/sequelize.db.js');
 const db = require('./libs/db.js');
 const emojify = require('./libs/emojify.js');
-const tmdb = require('./libs/tmdb.js');
 const fastify = require('fastify')({ logger: true });
 const path = require('path');
+const sanitize = require('./libs/sanitize.js').sanitize;
+const sequelize = require('./libs/sequelize.db.js');
+const tmdb = require('./libs/tmdb.js');
 
 const NodeCache = require('node-cache');
 const partyCache = new NodeCache({ maxKeys: 1024 });
@@ -141,10 +142,13 @@ fastify.get('/api/v1/party/check', async (request, reply) => {
 });
 
 fastify.get('/api/v1/item/search', async (request, reply) => {
-    if (!request.query.q || !request.query.partyId) {
+    if (!request.query.q || request.query.q.length > 128 || !request.query.partyId || request.query.partyId.length > 128) {
         reply.status(400).send();
         return;
     }
+
+    request.query.q = sanitize(request.query.q);
+    request.query.partyId = sanitize(request.query.partyId);
 
     var party = await Party.checkParty(request.query.partyId);
     if (!party) {
@@ -186,12 +190,14 @@ fastify.get('/api/v1/item/search', async (request, reply) => {
 });
 
 fastify.put('/api/v1/item/add', async (request, reply) => {
-    if (!request.body || !request.body.partyId || !request.body.addedBy || !request.body.tmdbId) {
+    if (!request.body || !request.body.partyId || request.body.partyId.length > 128 || !request.body.addedBy || request.body.addedBy.length > 128 || !request.body.tmdbId) {
         reply.status(400).send();
         return;
     }
 
     request.body.tmdbId = parseInt(request.body.tmdbId);
+    request.body.partyId = sanitize(request.body.partyId);
+    request.body.addedBy = sanitize(request.body.addedBy);
 
     var party = await Party.checkParty(request.body.partyId);
     if (!party) {
@@ -231,6 +237,7 @@ fastify.post('/api/v1/item/:field', async (request, reply) => {
     }
 
     request.query.tmdbId = parseInt(request.query.tmdbId);
+    request.query.partyId = sanitize(request.query.partyId);
 
     var party = await Party.checkParty(request.query.partyId);
     if (!party) {
@@ -244,7 +251,7 @@ fastify.post('/api/v1/item/:field', async (request, reply) => {
 });
 
 fastify.delete('/api/v1/item/:field', async (request, reply) => {
-    if (!request.query.partyId || !request.query.tmdbId) {
+    if (!request.query.partyId || request.query.partyId.length > 128 || !request.query.tmdbId) {
         reply.status(400).send();
         return;
     }
@@ -255,6 +262,7 @@ fastify.delete('/api/v1/item/:field', async (request, reply) => {
     }
 
     request.query.tmdbId = parseInt(request.query.tmdbId);
+    request.query.partyId = sanitize(request.query.partyId);
 
     var party = await Party.checkParty(request.query.partyId);
     if (!party) {
@@ -268,10 +276,12 @@ fastify.delete('/api/v1/item/:field', async (request, reply) => {
 });
 
 fastify.get('/api/v1/item/list', async (request, reply) => {
-    if (!request.query.partyId) {
+    if (!request.query.partyId || request.query.partyId.length > 128) {
         reply.status(400).send();
         return;
     }
+
+    request.query.partyId = sanitize(request.query.partyId);
 
     var party = await Party.checkParty(request.query.partyId);
     if (!party) {
@@ -312,10 +322,12 @@ fastify.get('/api/v1/item/list', async (request, reply) => {
 });
 
 fastify.get('/api/v1/item/random', async (request, reply) => {
-    if (!request.query.partyId) {
+    if (!request.query.partyId || request.query.partyId.length > 128) {
         reply.status(400).send();
         return;
     }
+
+    request.query.partyId = sanitize(request.query.partyId);
 
     var party = await Party.checkParty(request.query.partyId);
     if (!party) {

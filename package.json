@@ -23,7 +23,8 @@
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.19.0",
     "sqlite3": "^5.0.8",
-    "tmdb": "^2.6.0"
+    "tmdb": "^2.6.0",
+    "validator": "^13.7.0"
   },
   "devDependencies": {
     "glob": "^8.0.1",

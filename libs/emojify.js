@@ -89,6 +89,7 @@ function string2emoji(string) {
 }
 
 function emoji2string(string) {
+    string = string.replace(':', '');
     string = emoji.unemojify(string).split(':').filter(e =>  e);
     result = '';
     for (let i = 0; i < string.length; i++) {
