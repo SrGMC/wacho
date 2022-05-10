@@ -1,11 +1,11 @@
-const sequelize = require("./libs/sequelize.db.js");
-const db = require("./libs/db.js");
-const emojify = require("./libs/emojify.js");
-const tmdb = require("./libs/tmdb.js");
-const fastify = require("fastify")({ logger: true });
-const path = require("path");
+const sequelize = require('./libs/sequelize.db.js');
+const db = require('./libs/db.js');
+const emojify = require('./libs/emojify.js');
+const tmdb = require('./libs/tmdb.js');
+const fastify = require('fastify')({ logger: true });
+const path = require('path');
 
-const NodeCache = require("node-cache");
+const NodeCache = require('node-cache');
 const partyCache = new NodeCache({ maxKeys: 1024 });
 
 const Party = new db.Party(sequelize, partyCache);
@@ -15,8 +15,8 @@ const Item = new db.Item(sequelize);
     Utils
 */
 function makeString(length) {
-    var result = "";
-    var characters = "abcdefghijklmnopqrstuvwxyz0123456789";
+    var result = '';
+    var characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
     var charactersLength = characters.length;
     for (var i = 0; i < length; i++) {
         result += characters.charAt(Math.floor(Math.random() * charactersLength));
@@ -25,19 +25,90 @@ function makeString(length) {
 }
 
 /*
-    Paths
+    Rate Limit store
 */
-fastify.register(require("@fastify/static"), {
-    root: path.join(__dirname, "dist"),
+function RateLimiterStore(options) {
+    this.options = options;
+    this.route = '';
+}
+
+RateLimiterStore.prototype.routeKey = function routeKey(route) {
+    if (route) this.route = route;
+    return route;
+};
+
+RateLimiterStore.prototype.incr = async function incr(key, cb) {
+    const now = new Date().getTime();
+    const ttl = now + this.options.timeWindow;
+    const cond = { Route: this.route, Source: key };
+
+    const RateLimit = await sequelize.RateLimits.findOne({ where: cond });
+
+    if (RateLimit && parseInt(RateLimit.TTL, 10) > now) {
+        try {
+            await RateLimit.update({ Count: RateLimit.Count + 1 }, cond);
+            cb(null, {
+                current: RateLimit.Count + 1,
+                ttl: RateLimit.TTL,
+            });
+        } catch (err) {
+            cb(err, {
+                current: 0,
+            });
+        }
+    } else {
+        sequelize.sequelize
+            .query(
+                `INSERT INTO "RateLimits"("Route", "Source", "Count", "TTL")
+              VALUES('${this.route}', '${key}', 1,
+              ${(RateLimit && RateLimit.TTL) || ttl})
+              ON CONFLICT("Route", "Source") DO UPDATE SET "Count"=1, "TTL"=${ttl}`
+            )
+            .then(() => {
+                cb(null, {
+                    current: 1,
+                    ttl: (RateLimit && RateLimit.TTL) || ttl,
+                });
+            })
+            .catch((err) => {
+                cb(err, {
+                    current: 0,
+                });
+            });
+    }
+};
+
+RateLimiterStore.prototype.child = function child(routeOptions = {}) {
+    const options = Object.assign(this.options, routeOptions);
+    const store = new RateLimiterStore(options);
+    store.routeKey(routeOptions.routeInfo.method + routeOptions.routeInfo.url);
+    return store;
+};
+
+/*
+    Fastify imports
+*/
+fastify.register(require('@fastify/static'), {
+    root: path.join(__dirname, 'dist'),
     prefixAvoidTrailingSlash: true,
 });
 
-fastify.register(require("fastify-language-parser"), {
-    supportedLngs: ["en"],
-    order: ["header"],
+fastify.register(require('fastify-language-parser'), {
+    supportedLngs: ['en'],
+    order: ['header'],
 });
 
-fastify.put("/api/v1/party/create", async (request, reply) => {
+fastify.register(require('@fastify/rate-limit'), {
+    max: 15000,
+    timeWindow: '10 minutes',
+    ban: 5,
+    store: RateLimiterStore,
+});
+
+/*
+    Paths
+*/
+fastify.put('/api/v1/party/create', async (request, reply) => {
     let id = makeString(5);
     let repeated = true;
     while (repeated) {
@@ -53,7 +124,7 @@ fastify.put("/api/v1/party/create", async (request, reply) => {
     reply.status(200).send(await Party.createParty(id));
 });
 
-fastify.get("/api/v1/party/check", async (request, reply) => {
+fastify.get('/api/v1/party/check', async (request, reply) => {
     if (!request.query.partyId) {
         reply.status(400).send();
         return;
@@ -65,11 +136,11 @@ fastify.get("/api/v1/party/check", async (request, reply) => {
     if (party) {
         reply.status(200).send(party);
     } else {
-        reply.status(404).send({ status: 404, error: "Party not found" });
+        reply.status(404).send({ status: 404, error: 'Party not found' });
     }
 });
 
-fastify.get("/api/v1/item/search", async (request, reply) => {
+fastify.get('/api/v1/item/search', async (request, reply) => {
     if (!request.query.q || !request.query.partyId) {
         reply.status(400).send();
         return;
@@ -77,13 +148,13 @@ fastify.get("/api/v1/item/search", async (request, reply) => {
 
     var party = await Party.checkParty(request.query.partyId);
     if (!party) {
-        reply.status(404).send({ status: 404, error: "Party not found" });
+        reply.status(404).send({ status: 404, error: 'Party not found' });
         return;
     }
 
     var items = await Party.getParty(party.partyId);
     if (!items) {
-        reply.status(404).send({ status: 404, error: "Party not found" });
+        reply.status(404).send({ status: 404, error: 'Party not found' });
         return;
     }
 
@@ -103,8 +174,8 @@ fastify.get("/api/v1/item/search", async (request, reply) => {
                 title: item.title,
                 overview: item.overview,
                 poster: item.poster_path
-                    ? "https://image.tmdb.org/t/p/w500/" + item.poster_path
-                    : "/assets/unknown.png",
+                    ? 'https://image.tmdb.org/t/p/w500/' + item.poster_path
+                    : '/assets/unknown.png',
                 runtime: item.runtime,
                 url: item.homepage,
             };
@@ -114,7 +185,7 @@ fastify.get("/api/v1/item/search", async (request, reply) => {
     reply.status(200).send(result);
 });
 
-fastify.put("/api/v1/item/add", async (request, reply) => {
+fastify.put('/api/v1/item/add', async (request, reply) => {
     if (!request.body || !request.body.partyId || !request.body.addedBy || !request.body.tmdbId) {
         reply.status(400).send();
         return;
@@ -124,13 +195,13 @@ fastify.put("/api/v1/item/add", async (request, reply) => {
 
     var party = await Party.checkParty(request.body.partyId);
     if (!party) {
-        reply.status(404).send({ status: 404, error: "Party not found" });
+        reply.status(404).send({ status: 404, error: 'Party not found' });
         return;
     }
 
     var item = await Item.getItem(request.body.partyId, request.body.tmdbId);
     if (item) {
-        reply.status(409).send({ status: 409, error: "Item is duplicated" });
+        reply.status(409).send({ status: 409, error: 'Item is duplicated' });
         return;
     }
 
@@ -139,7 +210,7 @@ fastify.put("/api/v1/item/add", async (request, reply) => {
         movie = await tmdb.movieInfo({ id: request.body.tmdbId });
     } catch (err) {
         console.log(err);
-        reply.status(404).send({ status: 404, error: "Movie not found" });
+        reply.status(404).send({ status: 404, error: 'Movie not found' });
         return;
     }
 
@@ -148,14 +219,14 @@ fastify.put("/api/v1/item/add", async (request, reply) => {
     reply.status(200).send();
 });
 
-fastify.post("/api/v1/item/:field", async (request, reply) => {
+fastify.post('/api/v1/item/:field', async (request, reply) => {
     if (!request.query.partyId || !request.query.tmdbId) {
         reply.status(400).send();
         return;
     }
 
-    if (!(request.params.field == "viewed" || request.params.field == "skipped")) {
-        reply.status(404).send({ status: 404, error: "POST /api/v1/item/" + request.params.field + " not found" });
+    if (!(request.params.field == 'viewed' || request.params.field == 'skipped')) {
+        reply.status(404).send({ status: 404, error: 'POST /api/v1/item/' + request.params.field + ' not found' });
         return;
     }
 
@@ -163,7 +234,7 @@ fastify.post("/api/v1/item/:field", async (request, reply) => {
 
     var party = await Party.checkParty(request.query.partyId);
     if (!party) {
-        reply.status(404).send({ status: 404, error: "Party not found" });
+        reply.status(404).send({ status: 404, error: 'Party not found' });
         return;
     }
 
@@ -172,14 +243,14 @@ fastify.post("/api/v1/item/:field", async (request, reply) => {
     reply.status(200).send();
 });
 
-fastify.delete("/api/v1/item/:field", async (request, reply) => {
+fastify.delete('/api/v1/item/:field', async (request, reply) => {
     if (!request.query.partyId || !request.query.tmdbId) {
         reply.status(400).send();
         return;
     }
 
-    if (!(request.params.field == "viewed" || request.params.field == "skipped")) {
-        reply.status(404).send({ status: 404, error: "DELETE /api/v1/item/" + request.params.field + " not found" });
+    if (!(request.params.field == 'viewed' || request.params.field == 'skipped')) {
+        reply.status(404).send({ status: 404, error: 'DELETE /api/v1/item/' + request.params.field + ' not found' });
         return;
     }
 
@@ -187,7 +258,7 @@ fastify.delete("/api/v1/item/:field", async (request, reply) => {
 
     var party = await Party.checkParty(request.query.partyId);
     if (!party) {
-        reply.status(404).send({ status: 404, error: "Party not found" });
+        reply.status(404).send({ status: 404, error: 'Party not found' });
         return;
     }
 
@@ -196,7 +267,7 @@ fastify.delete("/api/v1/item/:field", async (request, reply) => {
     reply.status(200).send();
 });
 
-fastify.get("/api/v1/item/list", async (request, reply) => {
+fastify.get('/api/v1/item/list', async (request, reply) => {
     if (!request.query.partyId) {
         reply.status(400).send();
         return;
@@ -204,13 +275,13 @@ fastify.get("/api/v1/item/list", async (request, reply) => {
 
     var party = await Party.checkParty(request.query.partyId);
     if (!party) {
-        reply.status(404).send({ status: 404, error: "Party not found" });
+        reply.status(404).send({ status: 404, error: 'Party not found' });
         return;
     }
 
     var items = await Party.getParty(party.partyId);
     if (!items) {
-        reply.status(404).send({ status: 404, error: "Party not found" });
+        reply.status(404).send({ status: 404, error: 'Party not found' });
         return;
     }
 
@@ -226,21 +297,21 @@ fastify.get("/api/v1/item/list", async (request, reply) => {
 
     for (let i = 0; i < items.length; i++) {
         let movie = await tmdb.movieInfo({ id: items[i].tmdbId, language: request.detectedLng });
-        items[i]["title"] = movie.title;
-        items[i]["overview"] = movie.overview;
+        items[i]['title'] = movie.title;
+        items[i]['overview'] = movie.overview;
         if (movie.poster_path) {
-            items[i]["poster"] = "https://image.tmdb.org/t/p/w500/" + movie.poster_path;
+            items[i]['poster'] = 'https://image.tmdb.org/t/p/w500/' + movie.poster_path;
         } else {
-            items[i]["poster"] = "/assets/unknown.png";
+            items[i]['poster'] = '/assets/unknown.png';
         }
-        items[i]["runtime"] = movie.runtime;
-        items[i]["url"] = movie.homepage;
+        items[i]['runtime'] = movie.runtime;
+        items[i]['url'] = movie.homepage;
     }
 
     reply.status(200).send(items);
 });
 
-fastify.get("/api/v1/item/random", async (request, reply) => {
+fastify.get('/api/v1/item/random', async (request, reply) => {
     if (!request.query.partyId) {
         reply.status(400).send();
         return;
@@ -248,7 +319,7 @@ fastify.get("/api/v1/item/random", async (request, reply) => {
 
     var party = await Party.checkParty(request.query.partyId);
     if (!party) {
-        reply.status(404).send({ status: 404, error: "Party not found" });
+        reply.status(404).send({ status: 404, error: 'Party not found' });
         return;
     }
 
@@ -256,9 +327,9 @@ fastify.get("/api/v1/item/random", async (request, reply) => {
 
     let movie = await tmdb.movieInfo({ id: item.tmdbId, language: request.detectedLng });
     let watchProviders = await tmdb.movieWatchProviders({ id: item.tmdbId });
-    countryProviders = watchProviders.results[request.headers["CF-IPCountry"]];
+    countryProviders = watchProviders.results[request.headers['CF-IPCountry']];
     if (!countryProviders) {
-        countryProviders = watchProviders.results["GB"];
+        countryProviders = watchProviders.results['GB'];
     }
 
     item = {
@@ -269,7 +340,7 @@ fastify.get("/api/v1/item/random", async (request, reply) => {
         addedBy: item.addedBy,
         title: movie.title,
         overview: movie.overview,
-        poster: movie.poster_path ? "https://image.tmdb.org/t/p/original/" + movie.poster_path : "/assets/unknown.png",
+        poster: movie.poster_path ? 'https://image.tmdb.org/t/p/original/' + movie.poster_path : '/assets/unknown.png',
         runtime: movie.runtime,
         url: movie.homepage,
         providers: countryProviders.link,
@@ -282,13 +353,13 @@ fastify.get("/api/v1/item/random", async (request, reply) => {
 const start = async () => {
     try {
         await sequelize.sync();
-        fastify.log.info("All models were synchronized successfully.");
+        fastify.log.info('All models were synchronized successfully.');
     } catch (err) {
         fastify.log.error(err);
         process.exit(1);
     }
     try {
-        await fastify.listen(process.env.PORT || 3000, "0.0.0.0");
+        await fastify.listen(process.env.PORT || 3000, '0.0.0.0');
     } catch (err) {
         fastify.log.error(err);
         process.exit(1);
