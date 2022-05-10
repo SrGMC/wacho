@@ -1,8 +1,15 @@
-const { Sequelize, Model, DataTypes, Op } = require("sequelize");
+const sequelize = require("./libs/sequelize.db.js");
+const db = require("./libs/db.js");
 const emojify = require("./libs/emojify.js");
 const tmdb = require("./libs/tmdb.js");
 const fastify = require("fastify")({ logger: true });
 const path = require("path");
+
+const NodeCache = require("node-cache");
+const partyCache = new NodeCache({ maxKeys: 1024 });
+
+const Party = new db.Party(sequelize, partyCache);
+const Item = new db.Item(sequelize);
 
 /*
     Utils
@@ -17,42 +24,9 @@ function makeString(length) {
     return result;
 }
 
-const sequelize = new Sequelize(process.env.DATABASE_URL, {
-    storage: "db.sqlite",
-});
-
-const Party = sequelize.define("Party", {
-    id: {
-        type: DataTypes.STRING,
-        unique: true,
-        primaryKey: true,
-        allowNull: false,
-    },
-});
-
-const Item = sequelize.define("Item", {
-    tmdbId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        primaryKey: true,
-    },
-    addedBy: {
-        type: DataTypes.TEXT,
-        allowNull: false,
-        primaryKey: true,
-    },
-    viewed: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false,
-    },
-    skipped: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false,
-    },
-});
-
-Party.hasMany(Item, { foreignKey: { name: "partyId", allowNull: false } });
-
+/*
+    Paths
+*/
 fastify.register(require("@fastify/static"), {
     root: path.join(__dirname, "dist"),
     prefixAvoidTrailingSlash: true,
@@ -63,20 +37,11 @@ fastify.register(require("fastify-language-parser"), {
     order: ["header"],
 });
 
-async function sync() {
-    await sequelize.sync();
-    console.log("All models were synchronized successfully.");
-}
-
 fastify.put("/api/v1/party/create", async (request, reply) => {
     let id = makeString(5);
     let repeated = true;
     while (repeated) {
-        var party = await Party.findOne({
-            where: {
-                id: id,
-            },
-        });
+        var party = await Party.checkParty(id);
 
         if (party) {
             id = makeString(5);
@@ -85,11 +50,7 @@ fastify.put("/api/v1/party/create", async (request, reply) => {
         }
     }
 
-    await Party.create({
-        id: id,
-    });
-
-    reply.status(200).send({ emojiId: emojify.string2emoji(id), partyId: id });
+    reply.status(200).send(await Party.createParty(id));
 });
 
 fastify.get("/api/v1/party/check", async (request, reply) => {
@@ -99,14 +60,10 @@ fastify.get("/api/v1/party/check", async (request, reply) => {
     }
 
     let id = emojify.emoji2string(request.query.partyId);
-    var party = await Party.findOne({
-        where: {
-            id: id,
-        },
-    });
+    var party = await Party.checkParty(id);
 
     if (party) {
-        reply.status(200).send({ emojiId: emojify.string2emoji(id), partyId: id });
+        reply.status(200).send(party);
     } else {
         reply.status(404).send({ status: 404, error: "Party not found" });
     }
@@ -118,12 +75,13 @@ fastify.get("/api/v1/item/search", async (request, reply) => {
         return;
     }
 
-    var items = await Item.findAll({
-        where: {
-            partyId: request.query.partyId,
-        },
-    });
+    var party = await Party.checkParty(request.query.partyId);
+    if (!party) {
+        reply.status(404).send({ status: 404, error: "Party not found" });
+        return;
+    }
 
+    var items = await Party.getParty(party.partyId);
     if (!items) {
         reply.status(404).send({ status: 404, error: "Party not found" });
         return;
@@ -144,7 +102,9 @@ fastify.get("/api/v1/item/search", async (request, reply) => {
                 tmdbId: item.id,
                 title: item.title,
                 overview: item.overview,
-                poster: item.poster_path ? "https://image.tmdb.org/t/p/w500/" + item.poster_path : "/assets/unknown.png",
+                poster: item.poster_path
+                    ? "https://image.tmdb.org/t/p/w500/" + item.poster_path
+                    : "/assets/unknown.png",
                 runtime: item.runtime,
                 url: item.homepage,
             };
@@ -162,24 +122,13 @@ fastify.put("/api/v1/item/add", async (request, reply) => {
 
     request.body.tmdbId = parseInt(request.body.tmdbId);
 
-    var party = await Party.findOne({
-        where: {
-            id: request.body.partyId,
-        },
-    });
-
+    var party = await Party.checkParty(request.body.partyId);
     if (!party) {
         reply.status(404).send({ status: 404, error: "Party not found" });
         return;
     }
 
-    var item = await Item.findOne({
-        where: {
-            partyId: request.body.partyId,
-            tmdbId: request.body.tmdbId,
-        },
-    });
-
+    var item = await Item.getItem(request.body.partyId, request.body.tmdbId);
     if (item) {
         reply.status(409).send({ status: 409, error: "Item is duplicated" });
         return;
@@ -194,117 +143,55 @@ fastify.put("/api/v1/item/add", async (request, reply) => {
         return;
     }
 
-    await Item.create({
-        partyId: party.id,
-        tmdbId: movie.id,
-        viewed: false,
-        skipped: false,
-        addedBy: request.body.addedBy,
-    });
+    await Item.createItem(party.partyId, movie.id, request.body.addedBy);
 
     reply.status(200).send();
 });
 
-fastify.post("/api/v1/item/viewed", async (request, reply) => {
+fastify.post("/api/v1/item/:field", async (request, reply) => {
     if (!request.query.partyId || !request.query.tmdbId) {
         reply.status(400).send();
         return;
     }
 
-    request.query.tmdbId = parseInt(request.query.tmdbId);
-
-    var item = await Item.findOne({
-        where: {
-            partyId: request.query.partyId,
-            tmdbId: request.query.tmdbId,
-        },
-    });
-
-    if (!item) {
-        reply.status(404).send({ status: 404, error: "Item not found" });
+    if (!(request.params.field == "viewed" || request.params.field == "skipped")) {
+        reply.status(404).send({ status: 404, error: "POST /api/v1/item/" + request.params.field + " not found" });
         return;
     }
 
-    item.viewed = true;
-    item.save();
+    request.query.tmdbId = parseInt(request.query.tmdbId);
+
+    var party = await Party.checkParty(request.query.partyId);
+    if (!party) {
+        reply.status(404).send({ status: 404, error: "Party not found" });
+        return;
+    }
+
+    await Item.setFieldValue(party.partyId, request.query.tmdbId, request.params.field, true);
 
     reply.status(200).send();
 });
 
-fastify.post("/api/v1/item/skipped", async (request, reply) => {
+fastify.delete("/api/v1/item/:field", async (request, reply) => {
     if (!request.query.partyId || !request.query.tmdbId) {
         reply.status(400).send();
         return;
     }
 
-    request.query.tmdbId = parseInt(request.query.tmdbId);
-
-    var item = await Item.findOne({
-        where: {
-            partyId: request.query.partyId,
-            tmdbId: request.query.tmdbId,
-        },
-    });
-
-    if (!item) {
-        reply.status(404).send({ status: 404, error: "Item not found" });
-        return;
-    }
-
-    item.skipped = true;
-    item.save();
-
-    reply.status(200).send();
-});
-
-fastify.delete("/api/v1/item/viewed", async (request, reply) => {
-    if (!request.query.partyId || !request.query.tmdbId) {
-        reply.status(400).send();
+    if (!(request.params.field == "viewed" || request.params.field == "skipped")) {
+        reply.status(404).send({ status: 404, error: "DELETE /api/v1/item/" + request.params.field + " not found" });
         return;
     }
 
     request.query.tmdbId = parseInt(request.query.tmdbId);
 
-    var item = await Item.findOne({
-        where: {
-            partyId: request.query.partyId,
-            tmdbId: request.query.tmdbId,
-        },
-    });
-
-    if (!item) {
-        reply.status(404).send({ status: 404, error: "Item not found" });
+    var party = await Party.checkParty(request.query.partyId);
+    if (!party) {
+        reply.status(404).send({ status: 404, error: "Party not found" });
         return;
     }
 
-    item.viewed = false;
-    item.save();
-
-    reply.status(200).send();
-});
-
-fastify.delete("/api/v1/item/skipped", async (request, reply) => {
-    if (!request.query.partyId || !request.query.tmdbId) {
-        reply.status(400).send();
-        return;
-    }
-
-    request.query.tmdbId = parseInt(request.query.tmdbId);
-
-    var item = await Item.findOne({
-        where: {
-            partyId: request.query.partyId,
-            tmdbId: request.query.tmdbId,
-        },
-    });
-
-    if (!item) {
-        reply.status(404).send({ status: 404, error: "Item not found" });
-        return;
-    }
-
-    item.skipped = false;
-    item.save();
+    await Item.setFieldValue(party.partyId, request.query.tmdbId, request.params.field, false);
 
     reply.status(200).send();
 });
@@ -315,13 +202,13 @@ fastify.get("/api/v1/item/list", async (request, reply) => {
         return;
     }
 
-    var items = await Item.findAll({
-        where: {
-            partyId: request.query.partyId,
-        },
-        order: [["tmdbId", "DESC"]],
-    });
+    var party = await Party.checkParty(request.query.partyId);
+    if (!party) {
+        reply.status(404).send({ status: 404, error: "Party not found" });
+        return;
+    }
 
+    var items = await Party.getParty(party.partyId);
     if (!items) {
         reply.status(404).send({ status: 404, error: "Party not found" });
         return;
@@ -344,7 +231,7 @@ fastify.get("/api/v1/item/list", async (request, reply) => {
         if (movie.poster_path) {
             items[i]["poster"] = "https://image.tmdb.org/t/p/w500/" + movie.poster_path;
         } else {
-            items[i]['poster'] = "/assets/unknown.png";
+            items[i]["poster"] = "/assets/unknown.png";
         }
         items[i]["runtime"] = movie.runtime;
         items[i]["url"] = movie.homepage;
@@ -359,21 +246,13 @@ fastify.get("/api/v1/item/random", async (request, reply) => {
         return;
     }
 
-    var items = await Item.findAll({
-        where: {
-            partyId: request.query.partyId,
-            viewed: false,
-            skipped: false,
-        },
-        order: [["tmdbId", "DESC"]],
-    });
-
-    if (!items) {
+    var party = await Party.checkParty(request.query.partyId);
+    if (!party) {
         reply.status(404).send({ status: 404, error: "Party not found" });
         return;
     }
 
-    let item = items[Math.floor(Math.random() * items.length)];
+    let item = await Item.getRandomItem(party.partyId);
 
     let movie = await tmdb.movieInfo({ id: item.tmdbId, language: request.detectedLng });
     let watchProviders = await tmdb.movieWatchProviders({ id: item.tmdbId });
@@ -402,7 +281,8 @@ fastify.get("/api/v1/item/random", async (request, reply) => {
 // Run server
 const start = async () => {
     try {
-        await sync();
+        await sequelize.sync();
+        fastify.log.info("All models were synchronized successfully.");
     } catch (err) {
         fastify.log.error(err);
         process.exit(1);
