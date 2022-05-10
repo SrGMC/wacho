@@ -110,13 +110,13 @@ fastify.register(require('@fastify/rate-limit'), {
     Paths
 */
 fastify.put('/api/v1/party/create', async (request, reply) => {
-    let id = makeString(5);
+    let id = makeString(Math.floor(Math.random() * (6 - 5 + 1)) + 5);
     let repeated = true;
     while (repeated) {
         var party = await Party.checkParty(id);
 
         if (party) {
-            id = makeString(5);
+            id = makeString(Math.floor(Math.random() * (6 - 5 + 1)) + 5);
         } else {
             repeated = false;
         }
