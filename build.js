@@ -43,20 +43,20 @@ glob(__dirname + "/dist/**/*.html", {}, (err, files) => {
             const shynetNoscript = parse('<noscript><img src="' + process.env.SHYNET_PIXEL_SRC + '"></noscript>');
             const shynetScript = parse('<script defer src="' + process.env.SHYNET_SCRIPT_SRC + '"></script>');
 
-            const googleAdsAdScript = parse('<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' + process.env.GADS_CLIENT + '" crossorigin="anonymous"></script>');
-            const googleAdsAdLoad = parse('<script>(adsbygoogle = window.adsbygoogle || []).push({});</script>');
-            const googleAdsAd = parse('<ins class="adsbygoogle" style="display: block; width: 100%; height: 90px" data-ad-client="' + process.env.GADS_CLIENT + '" data-ad-slot="' + process.env.GADS_SLOT + '" data-ad-format="auto" data-full-width-responsive="true"></ins>');
+            // const googleAdsAdScript = parse('<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' + process.env.GADS_CLIENT + '" crossorigin="anonymous"></script>');
+            // const googleAdsAdLoad = parse('<script>(adsbygoogle = window.adsbygoogle || []).push({});</script>');
+            // const googleAdsAd = parse('<ins class="adsbygoogle" style="display: block; width: 100%; height: 90px" data-ad-client="' + process.env.GADS_CLIENT + '" data-ad-slot="' + process.env.GADS_SLOT + '" data-ad-format="auto" data-full-width-responsive="true"></ins>');
 
             const body = root.querySelector("body");
             body.appendChild(shynetNoscript);
             body.appendChild(shynetScript);
-            body.appendChild(googleAdsAdScript);
-            body.appendChild(googleAdsAdLoad);
+            // body.appendChild(googleAdsAdScript);
+            // body.appendChild(googleAdsAdLoad);
 
-            const ads = root.querySelectorAll(".ad");
-            ads.forEach((ad) => {
-                ad.appendChild(googleAdsAd);
-            })
+            // const ads = root.querySelectorAll(".ad");
+            // ads.forEach((ad) => {
+            //     ad.appendChild(googleAdsAd);
+            // })
 
             fs.writeFileSync(file, root.toString());
         });

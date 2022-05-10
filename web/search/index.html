@@ -95,16 +95,7 @@
                 </div>
                 <h1 l-text="emojiId" class="mb-3"></h1>
 
-                <div class="ad mt-2">
-                    <ins
-                        class="adsbygoogle"
-                        style="display: block; width: 100%; height: 90px"
-                        data-ad-client="ca-pub-4355128340254185"
-                        data-ad-slot="7540706766"
-                        data-ad-format="auto"
-                        data-full-width-responsive="true"
-                    ></ins>
-                </div>
+                <!-- <div class="ad mt-2"></div> -->
 
                 <form>
                     <label for="shareInput" class="form-label">Search for a movie</label>
@@ -131,8 +122,8 @@
                 <div l-for="(item, index) in items.list" l-show="items.length > 0" style="display: none">
                     <div class="card mb-2 mt-2">
                         <div class="row g-0">
-                            <div class="col-2">
-                                <img l-bind:src="this.item.poster" class="img-fluid rounded-start" l-bind:alt="this.item.title + ' poster'" />
+                            <div class="col-2 d-flex align-items-center">
+                                <img l-bind:src="this.item.poster" class="img-fluid rounded mx-1 my-1" l-bind:alt="this.item.title + ' poster'" />
                             </div>
                             <div class="col-10">
                                 <div class="card-body">
@@ -145,20 +136,14 @@
                     </div>
                 </div>
 
-                <div class="ad mt-2">
-                    <ins
-                        class="adsbygoogle"
-                        style="display: block; width: 100%; height: 90px"
-                        data-ad-client="ca-pub-4355128340254185"
-                        data-ad-slot="7540706766"
-                        data-ad-format="auto"
-                        data-full-width-responsive="true"
-                    ></ins>
-                </div>
+                <!-- <div class="ad mt-2"></div> -->
             </main>
-            <footer class="pt-5 mt-2 mb-5 text-muted border-top border-dark">
-                Created by <a href="https://alvaro.galisteo.me">Álvaro Galisteo</a> &middot; &copy; 2022 <br />
-                Data provided by <a href="https://themoviedb.org">The Movie Database</a> and <a href="https://justwatch.com">JustWatch</a>
+            <footer class="pt-5 mt-5 mb-5 text-muted border-top border-dark">
+                Created by <a href="https://alvaro.galisteo.me">Álvaro Galisteo</a> &middot;
+                <a href="/privacy">Privacy policy</a> &middot; This app is
+                <a href="https://github.com/SrGMC/wacho">open source</a>! <br />
+                Data provided by <a href="https://themoviedb.org">The Movie Database</a> and
+                <a href="https://justwatch.com">JustWatch</a><br />
             </footer>
         </div>
 
