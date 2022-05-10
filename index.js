@@ -126,7 +126,7 @@ fastify.put('/api/v1/party/create', async (request, reply) => {
 });
 
 fastify.get('/api/v1/party/check', async (request, reply) => {
-    if (!request.query.partyId) {
+    if (!request.query.partyId || request.query.partyId.length > 20) {
         reply.status(400).send();
         return;
     }
@@ -142,7 +142,7 @@ fastify.get('/api/v1/party/check', async (request, reply) => {
 });
 
 fastify.get('/api/v1/item/search', async (request, reply) => {
-    if (!request.query.q || request.query.q.length > 128 || !request.query.partyId || request.query.partyId.length > 128) {
+    if (!request.query.q || request.query.q.length > 128 || !request.query.partyId || request.query.partyId.length > 20) {
         reply.status(400).send();
         return;
     }
@@ -190,7 +190,7 @@ fastify.get('/api/v1/item/search', async (request, reply) => {
 });
 
 fastify.put('/api/v1/item/add', async (request, reply) => {
-    if (!request.body || !request.body.partyId || request.body.partyId.length > 128 || !request.body.addedBy || request.body.addedBy.length > 128 || !request.body.tmdbId) {
+    if (!request.body || !request.body.partyId || request.body.partyId.length > 20 || !request.body.addedBy || request.body.addedBy.length > 128 || !request.body.tmdbId) {
         reply.status(400).send();
         return;
     }
@@ -251,7 +251,7 @@ fastify.post('/api/v1/item/:field', async (request, reply) => {
 });
 
 fastify.delete('/api/v1/item/:field', async (request, reply) => {
-    if (!request.query.partyId || request.query.partyId.length > 128 || !request.query.tmdbId) {
+    if (!request.query.partyId || request.query.partyId.length > 20 || !request.query.tmdbId) {
         reply.status(400).send();
         return;
     }
@@ -276,7 +276,7 @@ fastify.delete('/api/v1/item/:field', async (request, reply) => {
 });
 
 fastify.get('/api/v1/item/list', async (request, reply) => {
-    if (!request.query.partyId || request.query.partyId.length > 128) {
+    if (!request.query.partyId || request.query.partyId.length > 20) {
         reply.status(400).send();
         return;
     }
@@ -322,7 +322,7 @@ fastify.get('/api/v1/item/list', async (request, reply) => {
 });
 
 fastify.get('/api/v1/item/random', async (request, reply) => {
-    if (!request.query.partyId || request.query.partyId.length > 128) {
+    if (!request.query.partyId || request.query.partyId.length > 20) {
         reply.status(400).send();
         return;
     }
