@@ -68,7 +68,7 @@ Simply run `node index.js` to serve the API and the UI. Don't forget to `npm ins
 
 ### UI
 
-Every time you make a change to the UI (inside `web/`, run `node build.js` to generate the web files for the app.
+Every time you make a change to the UI (inside `web/`), run `node build.js` to generate the web files for the app.
 
 ## License
 
