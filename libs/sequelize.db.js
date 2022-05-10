@@ -22,7 +22,6 @@ const Item = sequelize.define('Item', {
     addedBy: {
         type: DataTypes.TEXT,
         allowNull: false,
-        primaryKey: true,
     },
     viewed: {
         type: DataTypes.BOOLEAN,
@@ -34,7 +33,7 @@ const Item = sequelize.define('Item', {
     },
 });
 
-Party.hasMany(Item, { foreignKey: { name: 'partyId', allowNull: false } });
+Party.hasMany(Item, { foreignKey: { name: 'partyId', allowNull: false, primaryKey: true } });
 
 const RateLimits = sequelize.define(
     'RateLimits',
