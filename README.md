@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="250" src="./preview.png">
+  <img width="200" src="./web/assets/wacho_512.png">
 </p>
 <p align="center">
   Wacho lets you and your friends create collaborative lists with movies you want to watch. Then, when you get together, let us choose what to watch.<br><a href="https://wacho.party">https://wacho.party</a>
