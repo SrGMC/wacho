@@ -54,7 +54,8 @@ function movieWatchProviders(options) {
     }
 }
 function searchMovie(options) {
-    let key = options.query;
+    options.language = options.language || "en";
+    let key = options.query + '&lang=' + options.language;
 
     let movie = tmdbSearchCache.get(key);
     if (movie) {
@@ -65,7 +66,7 @@ function searchMovie(options) {
     } else {
         return new Promise((resolve, reject) => {
             movieDb
-                .searchMovie({ query: options.query })
+                .searchMovie({ query: options.query, language: options.language })
                 .then((res) => {
                     tmdbSearchCache.set(key, res);
                     resolve(res);

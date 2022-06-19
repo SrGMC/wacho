@@ -95,7 +95,7 @@ fastify.register(require('@fastify/static'), {
 });
 
 fastify.register(require('fastify-language-parser'), {
-    supportedLngs: ['en'],
+    supportedLngs: ['es', 'en'],
     order: ['header'],
 });
 
@@ -105,6 +105,11 @@ fastify.register(require('@fastify/rate-limit'), {
     ban: 5,
     store: RateLimiterStore,
 });
+
+fastify.addHook('preHandler', async (request, reply) => {
+    console.log(request.detectedLng);
+    console.log(request.headers);
+})
 
 /*
     Paths
@@ -149,6 +154,9 @@ fastify.get('/api/v1/item/search', async (request, reply) => {
 
     request.query.q = sanitize(request.query.q);
     request.query.partyId = sanitize(request.query.partyId);
+    if (request.query.lang) {
+        request.query.lang = sanitize(request.query.lang);
+    }
 
     var party = await Party.checkParty(request.query.partyId);
     if (!party) {
@@ -166,7 +174,7 @@ fastify.get('/api/v1/item/search', async (request, reply) => {
         return parseInt(item.tmdbId);
     });
 
-    let result = await tmdb.searchMovie({ query: request.query.q });
+    let result = await tmdb.searchMovie({ query: request.query.q, language: request.query.lang || request.detectedLng });
 
     result = result.results
         .map((item) => {
@@ -282,6 +290,9 @@ fastify.get('/api/v1/item/list', async (request, reply) => {
     }
 
     request.query.partyId = sanitize(request.query.partyId);
+    if (request.query.lang) {
+        request.query.lang = sanitize(request.query.lang);
+    }
 
     var party = await Party.checkParty(request.query.partyId);
     if (!party) {
@@ -306,7 +317,7 @@ fastify.get('/api/v1/item/list', async (request, reply) => {
     });
 
     for (let i = 0; i < items.length; i++) {
-        let movie = await tmdb.movieInfo({ id: items[i].tmdbId, language: request.detectedLng });
+        let movie = await tmdb.movieInfo({ id: items[i].tmdbId, language: request.query.lang || request.detectedLng });
         items[i]['title'] = movie.title;
         items[i]['overview'] = movie.overview;
         if (movie.poster_path) {
@@ -328,6 +339,9 @@ fastify.get('/api/v1/item/random', async (request, reply) => {
     }
 
     request.query.partyId = sanitize(request.query.partyId);
+    if (request.query.lang) {
+        request.query.lang = sanitize(request.query.lang);
+    }
 
     var party = await Party.checkParty(request.query.partyId);
     if (!party) {
@@ -337,7 +351,7 @@ fastify.get('/api/v1/item/random', async (request, reply) => {
 
     let item = await Item.getRandomItem(party.partyId);
 
-    let movie = await tmdb.movieInfo({ id: item.tmdbId, language: request.detectedLng });
+    let movie = await tmdb.movieInfo({ id: item.tmdbId, language: request.query.lang || request.detectedLng  });
     let watchProviders = await tmdb.movieWatchProviders({ id: item.tmdbId });
     countryProviders = watchProviders.results[request.headers['CF-IPCountry']];
     if (!countryProviders) {
