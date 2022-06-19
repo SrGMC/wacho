@@ -1,6 +1,6 @@
 {
   "name": "wacho",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Create lists with your friends and add movies you want to watch. Then, when you get together, let us choose what to watch.",
   "main": "index.js",
   "scripts": {
