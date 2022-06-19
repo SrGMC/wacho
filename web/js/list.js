@@ -1,5 +1,6 @@
 const urlParams = new URLSearchParams(window.location.search);
 const partyId = urlParams.get("id");
+const lang = document.querySelector("html").getAttribute('lang');
 
 const http = new HTTPClass();
 const api = new APIClass(http);
