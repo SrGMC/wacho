@@ -1,0 +1,59 @@
+{
+  "common": {
+    "add": "Añadir",
+    "addedBy": "Añadido por",
+    "and": "y",
+    "backToList": "Volver a la lista",
+    "close": "Cerrar",
+    "description": "Con Wacho puedes crear y gestionar colaborativamente Watch Parties con tus amigos. Luego, cuando te reúnas, dejadnos elegir qué ver.",
+    "emptyList": "Hmmm… Esta lista está vacía…",
+    "loading": "Cargando…",
+    "randomize": "¡Escógeme una película!",
+    "save": "Guardar",
+    "shareList": "Compartir lista",
+    "summary": "Watch Parties, más fáciles que nunca",
+    "title": "Wacho — Watch Parties, más fáciles que nunca"
+  },
+  "errors": {
+    "partyNotFound": "No hemos podido encontrar esta Watch Party 😭"
+  },
+  "footer": {
+    "copyright": "Creado por",
+    "dataAttribution": "Datos provistos por",
+    "openSource": "¡Esta app es",
+    "privacyPolicy": "Política de privacidad"
+  },
+  "index": {
+    "access": {
+      "accessButton": "Entrar a la Watch Party",
+      "help": "El ID de una Watch Party esta compuesto por entre 5 y 6 emojis.",
+      "title": "ID de Watch Party"
+    },
+    "create": {
+      "createButton": "Crear Watch Party"
+    }
+  },
+  "list": {
+    "addMovie": "Añadir película"
+  },
+  "popup": {
+    "username": {
+      "help": "Te pedimos un nombre para que tus amigos sepan quién ha añadido cada película.",
+      "question": "¿Cómo te llamas?",
+      "title": "Vamos a conocernos"
+    }
+  },
+  "random": {
+    "skip": "Saltar",
+    "skipped": "Saltada",
+    "viewTmdb": "Ver en TMDB",
+    "watch": "Marcar como vista",
+    "watched": "Vista",
+    "whereToWatch": "Donde ver"
+  },
+  "search": {
+    "addToList": "Añadir a la lista",
+    "searchButton": "Buscar",
+    "searchMovie": "Buscar película"
+  }
+}

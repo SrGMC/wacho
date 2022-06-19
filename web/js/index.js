@@ -1,10 +1,11 @@
 const http = new HTTPClass();
 const api = new APIClass(http);
+const lang = document.querySelector("html").getAttribute('lang');
 
 function createParty(button) {
     setLoadButton(button);
     api.createParty().then((party) => {
-        window.location = window.location.origin + "/list?id=" + party.emojiId;
+        window.location = window.location.origin + "/" + lang + "/list?id=" + party.emojiId;
     });
 }
 

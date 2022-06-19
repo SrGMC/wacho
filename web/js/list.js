@@ -1,5 +1,6 @@
 const urlParams = new URLSearchParams(window.location.search);
 const partyId = urlParams.get("id");
+const lang = document.querySelector("html").getAttribute('lang');
 
 const http = new HTTPClass();
 const api = new APIClass(http);
@@ -74,7 +75,7 @@ async function init() {
     app.setAttribute("l-state", JSON.stringify({ 
         emojiId: party.emojiId, 
         partyId: party.partyId,
-        partyUrl: window.location.origin + "/list?id=" + party.emojiId,
+        partyUrl: window.location.origin + "/" + lang + "/list?id=" + party.emojiId,
         items: {
             length: items.length,
             list: items,

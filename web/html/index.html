@@ -1,34 +1,34 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="{{ language }}">
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
 
         <!-- Primary Meta Tags -->
-        <title>Wacho — Watch Parties made easy</title>
-        <meta name="title" content="Wacho — Watch Parties made easy" />
+        <title>{{ common.title }}</title>
+        <meta name="title" content="{{ common.title }}" />
         <meta
             name="description"
-            content="With Wacho you can collaboratively create and manage watch lists with your friends. Then, when you get together, let us choose what to watch."
+            content="{{ common.description }}"
         />
 
         <!-- Open Graph / Facebook -->
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://wacho.party/" />
-        <meta property="og:title" content="Wacho — Watch Parties made easy" />
+        <meta property="og:title" content="{{ common.title }}" />
         <meta
             property="og:description"
-            content="With Wacho you can collaboratively create and manage watch lists with your friends. Then, when you get together, let us choose what to watch."
+            content="{{ common.description }}"
         />
         <meta property="og:image" content="/assets/preview.png" />
 
         <!-- Twitter -->
         <meta property="twitter:card" content="summary_large_image" />
         <meta property="twitter:url" content="https://wacho.party/" />
-        <meta property="twitter:title" content="Wacho — Watch Parties made easy" />
+        <meta property="twitter:title" content="{{ common.title }}" />
         <meta
             property="twitter:description"
-            content="With Wacho you can collaboratively create and manage watch lists with your friends. Then, when you get together, let us choose what to watch."
+            content="{{ common.description }}"
         />
         <meta property="twitter:image" content="/assets/preview.png" />
 
@@ -42,7 +42,7 @@
             crossorigin="anonymous"
         />
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css" />
-        <link rel="stylesheet" href="/style.css" />
+        <link rel="stylesheet" href="/css/style.css" />
         <script src="/js/lucia.js"></script>
     </head>
     <body>
@@ -58,19 +58,19 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="partyNotFoundModalLabel">Oh, oh...</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ common.close }}"></button>
                     </div>
                     <div class="modal-body">
-                        <p>We couldn't find this watch party 😭</p>
+                        <p>{{ errors.partyNotFound }}</p>
                     </div>
                     <div class="modal-footer">
                         <button
                             type="button"
                             class="btn btn-secondary"
                             data-bs-dismiss="modal"
-                            onclick="window.location = '/';"
+                            onclick="window.location = '/{{ language }}/';"
                         >
-                            Close
+                            {{ common.close }}
                         </button>
                     </div>
                 </div>
@@ -87,19 +87,19 @@
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="usernameModalLabel">Let's get to know each other</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <h5 class="modal-title" id="usernameModalLabel">{{ popup.username.title }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ common.close }}"></button>
                     </div>
                     <div class="modal-body">
-                        <label for="usernameInput" class="form-label">What's your name?</label>
+                        <label for="usernameInput" class="form-label">{{ popup.username.question }}</label>
                         <input type="text" class="form-control" id="usernameInput" aria-describedby="usernameHelp" />
                         <div id="usernameHelp" class="form-text">
-                            We ask you for a name so that your friends know who added each movie.
+                            {{ popup.username.help }}
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="saveUsername();">
-                            Save
+                            {{ common.save }}
                         </button>
                     </div>
                 </div>
@@ -108,27 +108,26 @@
 
         <div class="col-lg-8 mx-auto p-3 py-md-5">
             <header class="d-flex align-items-center pb-3 mb-3 border-bottom border-dark">
-                <a href="/" class="d-flex align-items-center text-dark text-decoration-none">
+                <a href="/{{ language }}/" class="d-flex align-items-center text-dark text-decoration-none">
                     <h1 class="fs-1"><img width="48" src="/assets/wacho_512.png" style="margin-top: -15px;"> WACHO</h1>
                 </a>
             </header>
 
             <main>
-                <h2 class="fs-1">Watch Parties made easy</h2>
+                <h2 class="fs-1">{{ common.summary }}</h2>
                 <p class="fs-5 col-md-8">
-                    Create lists with your friends and add movies you want to watch. Then, when you get together, let us
-                    choose what to watch.
+                    {{ common.description }}
                 </p>
 
                 <div class="mb-5">
-                    <button onclick="createParty(this)" class="btn btn-primary btn-lg px-4">Create Watch Party</button>
+                    <button onclick="createParty(this)" class="btn btn-primary btn-lg px-4">{{ index.create.createButton }}</button>
                 </div>
 
                 <hr class="col-3 col-md-2 mb-5" />
 
                 <div id="partyForm" l-state="{ emojiId: '' }">
                     <div class="mb-3">
-                        <label for="partyId" class="form-label">Watch Party ID</label>
+                        <label for="partyId" class="form-label">{{ index.access.title }}</label>
                         <input
                             type="text"
                             class="form-control"
@@ -136,28 +135,28 @@
                             aria-describedby="partyIdHelp"
                             l-model="emojiId"
                         />
-                        <div id="partyIdHelp" class="form-text">The ID of a Watch Party is composed of between 5 and 6 emojis.</div>
+                        <div id="partyIdHelp" class="form-text">{{ index.access.help }}</div>
                     </div>
                     <button class="btn btn-success" disabled l-show="emojiId.length == 0">
-                        Access the Watch Party
+                        {{ index.access.accessButton }}
                     </button>
                     <a
                         class="btn btn-success"
                         l-show="emojiId.length > 0"
-                        l-bind:href="window.location.origin + '/list?id=' + emojiId"
+                        l-bind:href="window.location.origin + '/{{ language }}/list?id=' + emojiId"
                         style="display: none"
                     >
-                        Access the Watch Party
+                        {{ index.access.accessButton }}
                     </a>
                 </div>
 
                 <!-- <div class="ad mt-2"></div> -->
             </main>
             <footer class="pt-5 mt-5 mb-5 text-muted border-top border-dark">
-                Created by <a href="https://alvaro.galisteo.me">Álvaro Galisteo</a> &middot;
-                <a href="/privacy">Privacy policy</a> &middot; This app is
+                {{ footer.copyright }} <a href="https://alvaro.galisteo.me">Álvaro Galisteo</a> &middot;
+                <a href="/{{ language }}/privacy">{{ footer.privacyPolicy }}</a> &middot; {{ footer.openSource }}
                 <a href="https://github.com/SrGMC/wacho">open source</a>! <br />
-                Data provided by <a href="https://themoviedb.org">The Movie Database</a> and
+                {{ footer.dataAttribution }} <a href="https://themoviedb.org">The Movie Database</a> {{ common.and }}
                 <a href="https://justwatch.com">JustWatch</a><br />
             </footer>
         </div>
@@ -169,6 +168,6 @@
         ></script>
         <script src="/js/classes.js"></script>
         <script src="/js/common.js"></script>
-        <script src="/script.js"></script>
+        <script src="/js/index.js"></script>
     </body>
 </html>

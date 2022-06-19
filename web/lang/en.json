@@ -1,0 +1,60 @@
+{
+  "common": {
+    "add": "Add",
+    "addedBy": "Added by",
+    "and": "and",
+    "backToList": "Back to the list",
+    "close": "Close",
+    "description": "With Wacho you can collaboratively create and manage Watch Parties with your friends. Then, when you get together, let us choose what to watch.",
+    "emptyList": "Hmmm… This list is empty…",
+    "loading": "Loading…",
+    "randomize": "Pick me a movie!",
+    "save": "Save",
+    "shareList": "Share this list",
+    "summary": "Watch Parties made easy",
+    "title": "Wacho — Watch Parties made easy"
+  },
+  "errors": {
+    "partyNotFound": "We couldn't find this Watch Party 😭"
+  },
+  "footer": {
+    "copyright": "Created by",
+    "dataAttribution": "Data provided by",
+    "openSource": "This app is",
+    "privacyPolicy": "Privacy policy"
+  },
+  "index": {
+    "access": {
+      "accessButton": "Access the Watch Party",
+      "help": "The ID of a Watch Party is composed of between 5 and 6 emojis.",
+      "title": "Watch Party ID"
+    },
+    "create": {
+      "createButton": "Create Watch Party"
+    }
+  },
+  "list": {
+    "addMovie": "Add a movie"
+  },
+  "popup": {
+    "username": {
+      "help": "We ask you for a name so that your friends know who added each movie.",
+      "question": "What's your name?",
+      "title": "Let's get to know each other"
+    }
+  },
+  "random": {
+    "skip": "Skip",
+    "skipped": "Skipped",
+    "viewTmdb": "View in TMDB",
+    "watch": "Mark as watched",
+    "watched": "Watched",
+    "whereToWatch": "Where to watch"
+  },
+  "search": {
+    "addToList": "Add to list",
+    "searchButton": "Search",
+    "searchMovie": "Search for a movie"
+  },
+  "privacy": ""
+}

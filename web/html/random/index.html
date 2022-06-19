@@ -1,34 +1,34 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="{{ language }}">
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
 
         <!-- Primary Meta Tags -->
-        <title>Wacho — Watch Parties made easy</title>
-        <meta name="title" content="Wacho — Watch Parties made easy" />
+        <title>{{ common.title }}</title>
+        <meta name="title" content="{{ common.title }}" />
         <meta
             name="description"
-            content="With Wacho you can collaboratively create and manage watch lists with your friends. Then, when you get together, let us choose what to watch."
+            content="{{ common.description }}"
         />
 
         <!-- Open Graph / Facebook -->
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://wacho.party/" />
-        <meta property="og:title" content="Wacho — Watch Parties made easy" />
+        <meta property="og:title" content="{{ common.title }}" />
         <meta
             property="og:description"
-            content="With Wacho you can collaboratively create and manage watch lists with your friends. Then, when you get together, let us choose what to watch."
+            content="{{ common.description }}"
         />
         <meta property="og:image" content="/assets/preview.png" />
 
         <!-- Twitter -->
         <meta property="twitter:card" content="summary_large_image" />
         <meta property="twitter:url" content="https://wacho.party/" />
-        <meta property="twitter:title" content="Wacho — Watch Parties made easy" />
+        <meta property="twitter:title" content="{{ common.title }}" />
         <meta
             property="twitter:description"
-            content="With Wacho you can collaboratively create and manage watch lists with your friends. Then, when you get together, let us choose what to watch."
+            content="{{ common.description }}"
         />
         <meta property="twitter:image" content="/assets/preview.png" />
 
@@ -42,7 +42,7 @@
             crossorigin="anonymous"
         />
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css" />
-        <link rel="stylesheet" href="/style.css" />
+        <link rel="stylesheet" href="/css/style.css" />
         <script src="/js/lucia.js"></script>
     </head>
     <body id="app">
@@ -54,10 +54,10 @@
                         <h5 class="modal-title" id="partyNotFoundModalLabel">Oh, oh...</h5>
                     </div>
                     <div class="modal-body">
-                        <p>We couldn't find this watch party 😭</p>
+                        <p>{{ errors.partyNotFound }}</p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="window.location = '/';">Close</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="window.location = '/{{ language }}/';">{{ common.close }}</button>
                     </div>
                 </div>
             </div>
@@ -67,16 +67,16 @@
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="usernameModalLabel">Let's get to know each other</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <h5 class="modal-title" id="usernameModalLabel">{{ popup.username.title }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ common.close }}"></button>
                     </div>
                     <div class="modal-body">
-                        <label for="usernameInput" class="form-label">What's your name?</label>
+                        <label for="usernameInput" class="form-label">{{ popup.username.question }}</label>
                         <input type="text" class="form-control" id="usernameInput" aria-describedby="usernameHelp" />
-                        <div id="usernameHelp" class="form-text">We ask you for a name so that your friends know who added each movie.</div>
+                        <div id="usernameHelp" class="form-text">{{ popup.username.help }}</div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="saveUsername();">Save</button>
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="saveUsername();">{{ common.save }}</button>
                     </div>
                 </div>
             </div>
@@ -84,14 +84,14 @@
 
         <div class="col-lg-8 mx-auto p-3 py-md-5">
             <header class="d-flex align-items-center pb-3 mb-3 border-bottom border-dark">
-                <a href="/" class="d-flex align-items-center text-dark text-decoration-none">
+                <a href="/{{ language }}/" class="d-flex align-items-center text-dark text-decoration-none">
                     <h1 class="fs-1"><img width="48" src="/assets/wacho_512.png" style="margin-top: -15px;"> WACHO</h1>
                 </a>
             </header>
 
             <main>
                 <div class="mb-3">
-                    <a l-bind:href="'/list?id=' + emojiId"> <i class="bi bi-arrow-left-circle me-1"></i>Back to the list </a>
+                    <a l-bind:href="'/{{ language }}/list?id=' + emojiId"> <i class="bi bi-arrow-left-circle me-1"></i>{{ common.backToList }} </a>
                 </div>
                 <h1 l-text="emojiId" class="mb-3"></h1>
 
@@ -99,11 +99,11 @@
 
                 <hr class="col-3 col-md-2 mb-3" />
 
-                <a href="/random" class="btn gradient-scroll-bg btn-lg w-100 my-2 text-white fs-3"><i class="bi bi-shuffle me-2"></i> Randomize!</a><br />
+                <a href="/{{ language }}/random" class="btn gradient-scroll-bg btn-lg w-100 my-2 text-white fs-3"><i class="bi bi-shuffle me-2"></i> {{ common.randomize }}</a><br />
 
                 <div class="text-center my-3" l-show="loading">
                     <div class="spinner-grow spinner-grow-sm" role="status">
-                        <span class="visually-hidden">Loading...</span>
+                        <span class="visually-hidden">{{ random.loading }}</span>
                     </div>
                 </div>
                 <div class="d-flex justify-content-center">
@@ -115,18 +115,18 @@
 
                                     <p class="card-text" l-text="item.overview"></p>
                                     <p class="card-text">
-                                        <small class="text-muted">Added by: <span l-text="item.addedBy"></span></small>
+                                        <small class="text-muted">{{ common.addedBy }}: <span l-text="item.addedBy"></span></small>
                                     </p>
                                     <a l-show="item.providers" l-bind:href="item.providers" style="display: none" class="btn btn-primary mb-2" target="_blank"
-                                        ><i class="bi bi-film me-2"></i> Watch</a
+                                        ><i class="bi bi-film me-2"></i> {{ random.whereToWatch }}</a
                                     >
-                                    <a l-bind:href="'https://www.themoviedb.org/movie/' + item.tmdbId" class="btn btn-secondary mb-2" target="_blank">View in TMDB</a>
+                                    <a l-bind:href="'https://www.themoviedb.org/movie/' + item.tmdbId" class="btn btn-secondary mb-2" target="_blank">{{ random.viewTmdb }}</a>
                                     <br />
                                     <button class="btn btn-outline-success" l-show="!item.viewed" l-bind:disabled="item.skipped" @click="setItemAsViewed(item.tmdbId, item, $el);">
-                                        <i class="bi bi-eye me-2"></i> Mark as watched
+                                        <i class="bi bi-eye me-2"></i> {{ random.watch }}
                                     </button>
                                     <button class="btn btn-success" l-show="item.viewed" @click="unsetItemAsViewed(item.tmdbId, item, $el);">
-                                        <i class="bi bi-eye me-2"></i> Watched
+                                        <i class="bi bi-eye me-2"></i> {{ random.watched }}
                                     </button>
                                     <button
                                         class="btn btn-outline-secondary"
@@ -134,10 +134,10 @@
                                         l-bind:disabled="item.viewed"
                                         @click="setItemAsSkipped(item.tmdbId, item, $el)"
                                     >
-                                        <i class="bi bi-skip-forward me-2"></i> Skip
+                                        <i class="bi bi-skip-forward me-2"></i> {{ random.skip }}
                                     </button>
                                     <button class="btn btn-secondary" l-show="item.skipped" @click="unsetItemAsSkipped(item.tmdbId, item, $el)">
-                                        <i class="bi bi-skip-forward me-2"></i> Skipped
+                                        <i class="bi bi-skip-forward me-2"></i> {{ random.skipped }}
                                     </button>
                                 </div>
                             </div>
@@ -151,10 +151,10 @@
                 <!-- <div class="ad mt-2"></div> -->
             </main>
             <footer class="pt-5 mt-5 mb-5 text-muted border-top border-dark">
-                Created by <a href="https://alvaro.galisteo.me">Álvaro Galisteo</a> &middot;
-                <a href="/privacy">Privacy policy</a> &middot; This app is
+                {{ footer.copyright }} <a href="https://alvaro.galisteo.me">Álvaro Galisteo</a> &middot;
+                <a href="/{{ language }}/privacy">{{ footer.privacyPolicy }}</a> &middot; {{ footer.openSource }}
                 <a href="https://github.com/SrGMC/wacho">open source</a>! <br />
-                Data provided by <a href="https://themoviedb.org">The Movie Database</a> and
+                {{ footer.dataAttribution }} <a href="https://themoviedb.org">The Movie Database</a>{{ common.and }}
                 <a href="https://justwatch.com">JustWatch</a><br />
             </footer>
         </div>
@@ -166,6 +166,6 @@
         ></script>
         <script src="/js/classes.js"></script>
         <script src="/js/common.js"></script>
-        <script src="/random/script.js"></script>
+        <script src="/js/random.js"></script>
     </body>
 </html>
