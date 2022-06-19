@@ -102,11 +102,11 @@ class APIClass {
 
     getPartyList() {
         let partyId = localStorage.getItem("partyId");
-        return this.http.get("/api/v1/item/list?partyId=" + partyId);
+        return this.http.get("/api/v1/item/list?partyId=" + partyId + "&lang=" + lang);
     }
 
     searchMovie(query) {
-        return this.http.get("/api/v1/item/search?q=" + query + "&partyId=" + localStorage.getItem("partyId"));
+        return this.http.get("/api/v1/item/search?q=" + query + "&partyId=" + localStorage.getItem("partyId") + "&lang=" + lang);
     }
 
     addItemToParty(tmdbId) {
@@ -134,6 +134,6 @@ class APIClass {
     }
 
     getRandomMovie() {
-        return this.http.get("/api/v1/item/random?partyId=" + localStorage.getItem("partyId"));
+        return this.http.get("/api/v1/item/random?partyId=" + localStorage.getItem("partyId") + "&lang=" + lang);
     }
 }

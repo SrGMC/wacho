@@ -23,6 +23,7 @@
     "openSource": "¡Esta app es",
     "privacyPolicy": "Política de privacidad"
   },
+  "icon": "🇪🇸",
   "index": {
     "access": {
       "accessButton": "Entrar a la Watch Party",
@@ -32,6 +33,10 @@
     "create": {
       "createButton": "Crear Watch Party"
     }
+  },
+  "language": {
+    "english": "Inglés",
+    "spanish": "Español"
   },
   "list": {
     "addMovie": "Añadir película"

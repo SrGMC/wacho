@@ -41,7 +41,7 @@ fs.readdirSync(__dirname + "/web/lang/").forEach((file) => {
     let lang = file.split(".")[0];
     const data = fs.readFileSync(__dirname + "/web/lang/" + file, "utf-8")
     languages[lang] = JSON.parse(data.toString());
-    languages[lang].language = lang
+    languages[lang].lang = lang
 
     // Create language directories
     copyRecursiveSync(__dirname + "/web/html", __dirname + "/dist/" + lang);

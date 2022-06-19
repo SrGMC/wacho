@@ -1,6 +1,5 @@
 const http = new HTTPClass();
 const api = new APIClass(http);
-const lang = document.querySelector("html").getAttribute('lang');
 
 function createParty(button) {
     setLoadButton(button);

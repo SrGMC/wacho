@@ -89,6 +89,14 @@ RateLimiterStore.prototype.child = function child(routeOptions = {}) {
 /*
     Fastify imports
 */
+fastify.get('/', async (request, reply) => {
+    if(request.detectedLng == 'es') { 
+        reply.redirect('/es/');
+    } else {
+        reply.redirect('/en/');
+    }
+});
+
 fastify.register(require('@fastify/static'), {
     root: path.join(__dirname, 'dist'),
     prefixAvoidTrailingSlash: true,
@@ -369,7 +377,7 @@ fastify.get('/api/v1/item/random', async (request, reply) => {
         poster: movie.poster_path ? 'https://image.tmdb.org/t/p/original/' + movie.poster_path : '/assets/unknown.png',
         runtime: movie.runtime,
         url: movie.homepage,
-        providers: countryProviders.link,
+        providers: countryProviders?.link,
     };
 
     reply.status(200).send(item);

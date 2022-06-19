@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ language }}">
+<html lang="{{ lang }}">
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -68,7 +68,7 @@
                             type="button"
                             class="btn btn-secondary"
                             data-bs-dismiss="modal"
-                            onclick="window.location = '/{{ language }}/';"
+                            onclick="window.location = '/{{ lang }}/';"
                         >
                             {{ common.close }}
                         </button>
@@ -107,10 +107,23 @@
         </div>
 
         <div class="col-lg-8 mx-auto p-3 py-md-5">
-            <header class="d-flex align-items-center pb-3 mb-3 border-bottom border-dark">
-                <a href="/{{ language }}/" class="d-flex align-items-center text-dark text-decoration-none">
-                    <h1 class="fs-1"><img width="48" src="/assets/wacho_512.png" style="margin-top: -15px;"> WACHO</h1>
-                </a>
+            <header class="d-flex align-items-center pb-3 mb-3 border-bottom border-dark row">
+                <div class="col-11">
+                    <a href="/{{ lang }}/" class="d-flex align-items-center text-dark text-decoration-none">
+                        <h1 class="fs-1"><img width="48" src="/assets/wacho_512.png" style="margin-top: -15px;"> WACHO</h1>
+                    </a>
+                </div>
+                <div class="col-1">
+                    <div class="dropdown">
+                        <button class="btn btn-outline-primary dropdown-toggle" type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            {{ icon }}
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="languageDropdown">
+                            <li><a class="dropdown-item" onclick="changeLanguage('en')" href="#">🇬🇧 {{ language.english }}</a></li>
+                            <li><a class="dropdown-item" onclick="changeLanguage('es')" href="#">🇪🇸 {{ language.spanish }}</a></li>
+                        </ul>
+                    </div>
+                </div>
             </header>
 
             <main>
@@ -143,7 +156,7 @@
                     <a
                         class="btn btn-success"
                         l-show="emojiId.length > 0"
-                        l-bind:href="window.location.origin + '/{{ language }}/list?id=' + emojiId"
+                        l-bind:href="window.location.origin + '/{{ lang }}/list?id=' + emojiId"
                         style="display: none"
                     >
                         {{ index.access.accessButton }}
@@ -154,7 +167,7 @@
             </main>
             <footer class="pt-5 mt-5 mb-5 text-muted border-top border-dark">
                 {{ footer.copyright }} <a href="https://alvaro.galisteo.me">Álvaro Galisteo</a> &middot;
-                <a href="/{{ language }}/privacy">{{ footer.privacyPolicy }}</a> &middot; {{ footer.openSource }}
+                <a href="/{{ lang }}/privacy">{{ footer.privacyPolicy }}</a> &middot; {{ footer.openSource }}
                 <a href="https://github.com/SrGMC/wacho">open source</a>! <br />
                 {{ footer.dataAttribution }} <a href="https://themoviedb.org">The Movie Database</a> {{ common.and }}
                 <a href="https://justwatch.com">JustWatch</a><br />

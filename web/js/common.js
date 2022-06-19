@@ -1,3 +1,5 @@
+const lang = document.querySelector("html").getAttribute('lang');
+
 /**
  * Displays a spinner in the button
  * @param {HTMLElement} button
@@ -44,4 +46,11 @@ if (!localStorage.getItem("username")) {
 function saveUsername() {
     let username = document.querySelector("#usernameInput").value;
     localStorage.setItem("username", username);
+}
+
+function changeLanguage(lang) {
+    localStorage.setItem("language", lang);
+    let location = window.location.toString().replace(window.location.origin, '').split('/');
+    location[1] = lang;
+    window.location = location.join('/');
 }
