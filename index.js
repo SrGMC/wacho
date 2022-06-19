@@ -114,6 +114,10 @@ fastify.register(require('@fastify/rate-limit'), {
     store: RateLimiterStore,
 });
 
+fastify.setNotFoundHandler((request, reply) => {
+    reply.redirect('/');
+})
+
 fastify.addHook('preHandler', async (request, reply) => {
     console.log(request.detectedLng);
     console.log(request.headers);
