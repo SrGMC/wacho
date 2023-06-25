@@ -9,7 +9,7 @@
 
 [Buy Me a Coffee ☕️](https://www.buymeacoffee.com/srgmc)
 
-# Wacho is getting shut down
+# `wacho.party` is getting shut down
 
 Wacho was a project I built for me and my friends to keep track of what movies to watch.
 
