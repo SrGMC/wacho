@@ -3,6 +3,7 @@ name: Deploy to fly.io
 on:
   push:
     branches: [ main ]
+  workflow_dispatch:
     
 env:
   FLY_ACCESS_TOKEN: ${{ secrets.FLY_ACCESS_TOKEN }}
