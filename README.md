@@ -9,6 +9,16 @@
 
 [Buy Me a Coffee ☕️](https://www.buymeacoffee.com/srgmc)
 
+# Wacho is getting shut down
+
+Wacho was a project I built for me and my friends to keep track of what movies to watch.
+
+It was really fun to create but having seen the metrics of the service, it's expensive to run for so little use.
+
+However, this is not the end for wacho. You can checkout the code repository and the guide on how to selfhost it yourself.
+
+If you need access to your data, please, send me a message at wacho at galisteo.me with the Watch Party IDs.
+
 # Installation
 
 Wacho can be deployed using Docker or [fly.io](https://fly.io/).
