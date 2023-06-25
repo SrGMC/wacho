@@ -12,7 +12,9 @@
     "save": "Guardar",
     "shareList": "Compartir lista",
     "summary": "Watch Parties, más fáciles que nunca",
-    "title": "Wacho — Watch Parties, más fáciles que nunca"
+    "title": "Wacho — Watch Parties, más fáciles que nunca",
+    "shutdown": "Wacho se va a cerrar",
+    "shutdownDescription": "Wacho era un proyecto que creé para que mis amigos y yo hiciéramos un seguimiento de las películas que veíamos.<br><br>Fue muy divertido crearlo, pero después de ver las métricas del servicio, resulta caro para tan poco uso.<br><br>Sin embargo, este no es el final para wacho. Puedes ver el <a href=\"https://github.com/SrGMC/wacho\">repositorio de código</a> y la guía sobre cómo instalarlo tú mismo.<br><br>Si necesitas recuperar tus datos, por favor, envíema un mensaje a <i>wacho arroba galisteo.me</i> con los Watch Party IDs."
   },
   "errors": {
     "partyNotFound": "No hemos podido encontrar esta Watch Party 😭"

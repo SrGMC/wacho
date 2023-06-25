@@ -46,66 +46,6 @@
         <script src="/js/lucia.js"></script>
     </head>
     <body>
-        <!-- Modals -->
-        <div
-            class="modal fade"
-            id="partyNotFoundModal"
-            tabindex="-1"
-            aria-labelledby="partyNotFoundModalLabel"
-            aria-hidden="true"
-        >
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="partyNotFoundModalLabel">Oh, oh...</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ common.close }}"></button>
-                    </div>
-                    <div class="modal-body">
-                        <p>{{ errors.partyNotFound }}</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button
-                            type="button"
-                            class="btn btn-secondary"
-                            data-bs-dismiss="modal"
-                            onclick="window.location = '/{{ lang }}/';"
-                        >
-                            {{ common.close }}
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div
-            class="modal fade"
-            id="usernameModal"
-            tabindex="-1"
-            aria-labelledby="usernameModalLabel"
-            aria-hidden="true"
-        >
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="usernameModalLabel">{{ popup.username.title }}</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ common.close }}"></button>
-                    </div>
-                    <div class="modal-body">
-                        <label for="usernameInput" class="form-label">{{ popup.username.question }}</label>
-                        <input type="text" class="form-control" id="usernameInput" aria-describedby="usernameHelp" />
-                        <div id="usernameHelp" class="form-text">
-                            {{ popup.username.help }}
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="saveUsername();">
-                            {{ common.save }}
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <div class="col-lg-8 mx-auto p-3 py-md-5">
             <header class="d-flex align-items-center pb-3 mb-3 border-bottom border-dark row">
                 <div class="col-8">
@@ -127,43 +67,10 @@
             </header>
 
             <main>
-                <h2 class="fs-1">{{ common.summary }}</h2>
+                <h2 class="fs-1">{{ common.shutdown }}</h2>
                 <p class="fs-5 col-md-8">
-                    {{ common.description }}
+                    {{ common.shutdownDescription }}
                 </p>
-
-                <div class="mb-5">
-                    <button onclick="createParty(this)" class="btn btn-primary btn-lg px-4">{{ index.create.createButton }}</button>
-                </div>
-
-                <hr class="col-3 col-md-2 mb-5" />
-
-                <div id="partyForm" l-state="{ emojiId: '' }">
-                    <div class="mb-3">
-                        <label for="partyId" class="form-label">{{ index.access.title }}</label>
-                        <input
-                            type="text"
-                            class="form-control"
-                            id="partyId"
-                            aria-describedby="partyIdHelp"
-                            l-model="emojiId"
-                        />
-                        <div id="partyIdHelp" class="form-text">{{ index.access.help }}</div>
-                    </div>
-                    <button class="btn btn-success" disabled l-show="emojiId.length == 0">
-                        {{ index.access.accessButton }}
-                    </button>
-                    <a
-                        class="btn btn-success"
-                        l-show="emojiId.length > 0"
-                        l-bind:href="window.location.origin + '/{{ lang }}/list?id=' + emojiId"
-                        style="display: none"
-                    >
-                        {{ index.access.accessButton }}
-                    </a>
-                </div>
-
-                <!-- <div class="ad mt-2"></div> -->
             </main>
             <footer class="pt-5 mt-5 mb-5 text-muted border-top border-dark">
                 {{ footer.copyright }} <a href="https://alvaro.galisteo.me">Álvaro Galisteo</a> &middot;
