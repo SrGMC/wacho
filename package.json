@@ -14,7 +14,7 @@
     "@fastify/static": "^5.0.2",
     "fastify": "^3.29.3",
     "fastify-language-parser": "^3.0.0",
-    "mariadb": "^3.0.0",
+    "mariadb": "^3.2.1",
     "moviedb-promise": "^3.2.0",
     "mustache": "^4.2.0",
     "mysql2": "^2.3.3",
